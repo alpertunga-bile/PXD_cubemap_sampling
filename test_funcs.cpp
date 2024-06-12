@@ -69,9 +69,20 @@ inline int sign(float x) noexcept {
 }
 
 inline int get_max_index(glm::vec3 &&vec) noexcept {
-  int mx = ((vec.y > vec.z) && (vec.y > vec.x));
-  int mz = (((vec.z > vec.y) && (vec.z > vec.x)) * 2);
-  return mx + mz;
+  int results[3] = {0, 0, 0};
+  int i = 0;
+
+  results[0] = (vec.x >= vec.y) && (vec.x >= vec.z);
+  results[1] = ((vec.y >= vec.z) && (vec.y >= vec.x));
+  results[2] = ((vec.z >= vec.y) && (vec.z >= vec.x));
+
+  for (; i < 3; i++) {
+    if (results[i] == i) {
+      return i;
+    }
+  }
+
+  return 0;
 }
 
 glm::vec3 refactored_func(glm::vec3 vec) {

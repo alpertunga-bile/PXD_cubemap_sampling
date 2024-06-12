@@ -8,7 +8,7 @@
 #define GLM_FORCE_INTRINSICS
 #endif
 
-constexpr int N = 1000000;
+constexpr int N = 10000000;
 
 #include "vec3.hpp"
 
