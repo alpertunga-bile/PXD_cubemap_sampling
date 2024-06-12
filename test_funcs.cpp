@@ -11,8 +11,7 @@
 #include "glm.hpp"
 
 namespace pxd {
-glm::vec3 reel_func(const glm::vec3 &_vec) {
-  glm::vec3 vec = _vec;
+glm::vec3 reel_func(glm::vec3 vec) {
 
   float layer;
   glm::vec2 coord;
@@ -57,17 +56,29 @@ glm::vec3 reel_func(const glm::vec3 &_vec) {
   return glm::vec3(coord, layer);
 }
 
-constexpr int arr_value_cache[3] = {-1, 0, 1};
-constexpr int arr_index_cache[5] = {0, 1, 2, 0, 1};
+constexpr float EPSILON = 0.00001f;
 
-glm::vec3 refactored_func(const glm::vec3 &_vec) {
-  glm::vec3 vec = _vec;
-  glm::vec3 absVec = glm::abs(vec);
+inline int sign(float x) noexcept {
+  if (x < 0.f) {
+    return -1;
+  } else {
+    return 1;
+  }
 
-  int index = ((absVec.y > absVec.z) && (absVec.y > absVec.x)) +
-              (((absVec.z > absVec.y) && (absVec.z > absVec.x)) * 2);
+  return 1;
+}
 
-  int max_value_sign = arr_value_cache[(int)glm::sign(vec[index]) + 1];
+inline int get_max_index(glm::vec3 &&vec) noexcept {
+  int mx = ((vec.y > vec.z) && (vec.y > vec.x));
+  int mz = (((vec.z > vec.y) && (vec.z > vec.x)) * 2);
+  return mx + mz;
+}
+
+glm::vec3 refactored_func(glm::vec3 vec) {
+
+  int index = get_max_index(glm::abs(vec));
+
+  int max_value_sign = sign(vec[index]);
 
   float layer = (float)index * 2.0f;
 
@@ -84,23 +95,20 @@ glm::vec3 refactored_func(const glm::vec3 &_vec) {
 
   vec /= vec[index];
 
-  glm::vec2 coord =
-      glm::vec2(vec[(index + 2) % 3], vec[(index + 1) % 3]) * -1.0f;
+  glm::vec2 coord(vec[(index + 2) % 3], vec[(index + 1) % 3]);
 
   switch (index) {
-  case 1:
+  case 0:
     coord *= -1.0f;
     break;
   case 2:
-    coord = coord.yx;
+    coord = coord.yx * -1.0f;
     break;
   }
 
   coord = (coord + glm::vec2(1.0)) * 0.5f;
   return glm::vec3(coord, layer);
 }
-
-constexpr float EPSILON = 0.00001f;
 
 bool check_vec_equal(const glm::vec3 &a, const glm::vec3 &b) {
   for (int i = 0; i < 3; i++) {
