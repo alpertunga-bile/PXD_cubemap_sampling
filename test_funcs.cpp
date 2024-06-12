@@ -11,6 +11,7 @@
 #include "glm.hpp"
 
 namespace pxd {
+// from https://github.com/Oyun-Teknolojileri/ToolKit/blob/Engine/Resources/Engine/Shaders/textureUtil.shader
 glm::vec3 reel_func(glm::vec3 vec) {
 
   float layer;
