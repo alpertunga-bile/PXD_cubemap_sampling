@@ -77,7 +77,7 @@ inline int get_max_index(glm::vec3 &&vec) noexcept {
   results[2] = ((vec.z >= vec.y) && (vec.z >= vec.x));
 
   for (; i < 3; i++) {
-    if (results[i] == i) {
+    if (results[i] == 1) {
       return i;
     }
   }
