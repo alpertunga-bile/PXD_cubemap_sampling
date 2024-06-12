@@ -37,7 +37,11 @@ int main() {
     }
   }
 
-  fmt::print("Summary : {} / {}", correct_counter, N);
+  float success_ratio =
+      static_cast<float>(correct_counter) / static_cast<float>(N) * 100.f;
+
+  fmt::print("Summary : {} / {} | %{:.2f} Success", correct_counter, N,
+             success_ratio);
 
   return 0;
 }
