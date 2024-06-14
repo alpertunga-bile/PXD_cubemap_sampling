@@ -43,4 +43,10 @@ vec3 get_val(vec3 vec) {
   return vec3((coord + vec2(1.0)) * 0.5, layer);
 }
 
-void main() { frag_color = vec4(get_val(vec3(1.0)), 1.0); }
+layout(location = 0) in vec3 random_value;
+layout(location = 1) in vec3 color;
+
+void main() {
+  vec3 temp_vec = get_val(random_value);
+  frag_color = vec4(color, 1.0);
+}
