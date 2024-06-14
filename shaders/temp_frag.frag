@@ -25,7 +25,7 @@ const float coord_cached_values[16] = {1.0,  2.0, 1.0,  -1.0, 1.0, 0.0,
 vec3 get_val(vec3 vec) {
   int index = get_max_index(abs(vec));
 
-  float max_value_sign = coord_cached_values[12 + (int(sign(vec[index])) + 1)];
+  float max_value_sign = coord_cached_values[12 + (int(sign(vec[index]))) + 1];
 
   float layer = float(index) * 2.0 + ((max_value_sign * -1.0) + 1.0) * 0.5;
 

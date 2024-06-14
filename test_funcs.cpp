@@ -84,15 +84,10 @@ glm::vec3 refactored_func(glm::vec3 vec) {
   int index = get_max_index(glm::abs(vec));
 
   float max_value_sign =
-      coord_cached_values[12 + ((int)glm::sign(vec[index]) + 1)];
+      coord_cached_values[12 + (int)glm::sign(vec[index]) + 1];
 
   float layer = (float)index * 2.0f + ((max_value_sign * -1.0f) + 1.0f) * 0.5f;
 
-  /* index | vec_yz_sign
-       0   |      1
-       1   |      1
-       2   |     -1
-  */
   float vec_yz_sign = coord_cached_values[index * 4];
 
   vec.y *= vec_yz_sign;
