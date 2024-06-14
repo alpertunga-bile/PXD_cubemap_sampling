@@ -60,18 +60,6 @@ glm::vec3 reel_func(glm::vec3 vec) {
 
 constexpr float EPSILON = 0.00001f;
 
-/*
-inline int sign(float x) noexcept {
-  if (x < 0.f) {
-    return -1;
-  } else {
-    return 1;
-  }
-
-  return 1;
-}
-*/
-
 inline int get_max_index(glm::vec3 &&vec) noexcept {
   float max_val = vec.x;
   int index = 0;
@@ -88,22 +76,24 @@ inline int get_max_index(glm::vec3 &&vec) noexcept {
   return index;
 }
 
+constexpr float coord_cached_values[16] = {
+    1.0f,  2.0f, 1.0f, -1.0f, 1.0f,  0.0f, 2.0f, 1.0f,
+    -1.0f, 0.0f, 1.0f, -1.0f, -1.0f, 1.0f, 1.0f, 0.0f};
+
 glm::vec3 refactored_func(glm::vec3 vec) {
   int index = get_max_index(glm::abs(vec));
-  float float_index = (float)index;
 
   float max_value_sign =
-      glm::clamp(glm::sign(vec[index]) + 1.0f, 0.f, 1.f) * 2.0f - 1.0f;
+      coord_cached_values[12 + ((int)glm::sign(vec[index]) + 1)];
 
-  float layer = float_index * 2.0f + ((max_value_sign * -1.0f) + 1.0f) * 0.5f;
+  float layer = (float)index * 2.0f + ((max_value_sign * -1.0f) + 1.0f) * 0.5f;
 
   /* index | vec_yz_sign
        0   |      1
        1   |      1
        2   |     -1
   */
-  float vec_yz_sign =
-      glm::clamp((float_index * -1.0f) + 2.0f, 0.f, 1.f) * 2.0f - 1.0f;
+  float vec_yz_sign = coord_cached_values[index * 4];
 
   vec.y *= vec_yz_sign;
   vec.z *= vec_yz_sign;
@@ -112,27 +102,14 @@ glm::vec3 refactored_func(glm::vec3 vec) {
 
   vec /= vec[index];
 
-  glm::vec2 coord(vec[(index + 2) % 3], vec[(index + 1) % 3]);
+  glm::vec2 coord = glm::vec2(vec[(int)coord_cached_values[index * 4 + 1]],
+                              vec[(int)coord_cached_values[index * 4 + 2]]) *
+                    coord_cached_values[index * 4 + 3];
 
-  if (index == 0) {
-    coord *= -1.0f;
-  }
-
-  if (index == 2) {
-    coord = coord.yx * -1.0f;
-  }
-
-  coord = (coord + glm::vec2(1.0)) * 0.5f;
-  return glm::vec3(coord, layer);
+  return glm::vec3((coord + glm::vec2(1.0f)) * 0.5f, layer);
 }
 
 bool check_vec_equal(const glm::vec3 &a, const glm::vec3 &b) {
-  for (int i = 0; i < 3; i++) {
-    if (std::abs(a[i] - b[i]) > EPSILON) {
-      return false;
-    }
-  }
-
-  return true;
+  return glm::all(glm::equal(a, b));
 }
 } // namespace pxd
