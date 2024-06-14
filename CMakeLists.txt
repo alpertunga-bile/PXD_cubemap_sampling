@@ -16,6 +16,11 @@ if(NOT MSVC)
 endif(NOT MSVC)
 
 set(PXD_THIRD_PARTY_DIR ${CMAKE_CURRENT_SOURCE_DIR}/third-party)
+set(PXD_SHADER_DIR ${CMAKE_CURRENT_SOURCE_DIR}/shaders)
+set(PXD_COMPILED_SHADER_DIR ${CMAKE_CURRENT_SOURCE_DIR}/shaders/compiled)
+
+find_program(GLSL_VALIDATOR glslangValidator HINTS /usr/bin /usr/local/bin $ENV{VULKAN_SDK}/Bin/ $ENV{VULKAN_SDK}/Bin32/)
+find_program(SPIRV_OPT spirv-opt HINTS /usr/bin /usr/local/bin $ENV{VULKAN_SDK}/Bin/ $ENV{VULKAN_SDK}/Bin32/)
 
 ################################################################################
 ## Submodule DEFINITIONS
@@ -71,6 +76,49 @@ target_precompile_headers(
     <random>
     ${PXD_HEADER_FILES}
 )
+
+if(GLSL_VALIDATOR)
+    set(TARGET_ENV opengl)
+    set(GLSL_VERSION 460)
+
+    file(GLOB_RECURSE PXD_GLSL_FILES
+        "${PXD_SHADER_DIR}/*.frag"
+        "${PXD_SHADER_DIR}/*.vert"
+    )
+
+    foreach(GLSL_FILE ${PXD_GLSL_FILES})
+        get_filename_component(GLSL_FILENAME ${GLSL_FILE} NAME_WE)
+
+        set(SPIRV_FILE "${PXD_COMPILED_SHADER_DIR}/${GLSL_FILENAME}.spv")
+
+        set(SPIRV_C_NAME "${GLSL_FILENAME}_spv")
+        set(SPIRV_C_HEADER_FILE "${PXD_COMPILED_SHADER_DIR}/${SPIRV_C_NAME}.h")
+
+        add_custom_target(
+            ${GLSL_FILENAME}_SPIRV_TARGET
+            COMMAND ${GLSL_VALIDATOR} -V ${GLSL_FILE} -o ${SPIRV_FILE} -e main -t --glsl-version ${GLSL_VERSION} --enhanced-msgs --target-env ${TARGET_ENV} -I${PXD_SHADER_DIR} --spirv-val -g0
+        )
+
+        add_custom_target(
+            ${GLSL_FILENAME}_SPIRV_C_TARGET
+            COMMAND ${GLSL_VALIDATOR} -V ${GLSL_FILE} -o ${SPIRV_C_HEADER_FILE} -e main -t --glsl-version ${GLSL_VERSION} --enhanced-msgs --target-env ${TARGET_ENV} -I${PXD_SHADER_DIR} --vn ${SPIRV_C_NAME} --spirv-val -g0
+        )
+
+        add_dependencies(${PROJECT_NAME} ${GLSL_FILENAME}_SPIRV_TARGET ${GLSL_FILENAME}_SPIRV_C_TARGET)
+
+        if(SPIRV_OPT)
+            set(SPIRV_OPT_NAME "${GLSL_FILENAME}_opt")
+            set(SPIRV_OPT_FILE "${PXD_COMPILED_SHADER_DIR}/${SPIRV_OPT_NAME}.spv")
+
+            add_custom_target(
+                ${GLSL_FILENAME}_SPIRV_OPT_TARGET
+                COMMAND ${SPIRV_OPT} ${SPIRV_FILE} -O -o ${SPIRV_OPT_FILE} --strip-debug --target-env=${TARGET_ENV}4.5 --upgrade-memory-model --remove-duplicates
+            )
+
+            add_dependencies(${PROJECT_NAME} ${GLSL_FILENAME}_SPIRV_OPT_TARGET)
+        endif()
+    endforeach()
+endif()
 
 ################################################################################
 ## Benchmark Project Definitions
