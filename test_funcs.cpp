@@ -11,7 +11,8 @@
 #include "glm.hpp"
 
 namespace pxd {
-// from https://github.com/Oyun-Teknolojileri/ToolKit/blob/Engine/Resources/Engine/Shaders/textureUtil.shader
+// from
+// https://github.com/Oyun-Teknolojileri/ToolKit/blob/Engine/Resources/Engine/Shaders/textureUtil.shader
 glm::vec3 reel_func(glm::vec3 vec) {
 
   float layer;
@@ -59,6 +60,7 @@ glm::vec3 reel_func(glm::vec3 vec) {
 
 constexpr float EPSILON = 0.00001f;
 
+/*
 inline int sign(float x) noexcept {
   if (x < 0.f) {
     return -1;
@@ -68,54 +70,51 @@ inline int sign(float x) noexcept {
 
   return 1;
 }
+*/
 
 inline int get_max_index(glm::vec3 &&vec) noexcept {
-  int results[3] = {0, 0, 0};
-  int i = 0;
+  float max_val = vec.x;
+  int index = 0;
 
-  results[0] = (vec.x >= vec.y) && (vec.x >= vec.z);
-  results[1] = ((vec.y >= vec.z) && (vec.y >= vec.x));
-  results[2] = ((vec.z >= vec.y) && (vec.z >= vec.x));
-
-  for (; i < 3; i++) {
-    if (results[i] == 1) {
-      return i;
-    }
+  if (vec.y > max_val) {
+    max_val = vec.y;
+    index = 1;
   }
 
-  return 0;
+  if (vec.z > max_val) {
+    index = 2;
+  }
+
+  return index;
 }
 
 glm::vec3 refactored_func(glm::vec3 vec) {
-
   int index = get_max_index(glm::abs(vec));
 
-  int max_value_sign = sign(vec[index]);
+  float max_value_sign =
+      (glm::clamp(glm::sign(vec[index]) + 1.0f, 0.f, 1.f) * 2.0f - 1.0f);
 
   float layer = (float)index * 2.0f;
 
-  if (max_value_sign == -1) {
-    layer += 1.0f;
-  }
+  layer += ((max_value_sign * -1.0) + 1.0) * 0.5;
 
   if (index == 2) {
     vec.y *= -1.0f;
     vec.z *= -1.0f;
   }
 
-  vec[(index + 1) % 2] *= (float)max_value_sign;
+  vec[(index + 1) % 2] *= max_value_sign;
 
   vec /= vec[index];
 
   glm::vec2 coord(vec[(index + 2) % 3], vec[(index + 1) % 3]);
 
-  switch (index) {
-  case 0:
+  if (index == 0) {
     coord *= -1.0f;
-    break;
-  case 2:
+  }
+
+  if (index == 2) {
     coord = coord.yx * -1.0f;
-    break;
   }
 
   coord = (coord + glm::vec2(1.0)) * 0.5f;
