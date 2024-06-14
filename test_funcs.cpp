@@ -90,18 +90,23 @@ inline int get_max_index(glm::vec3 &&vec) noexcept {
 
 glm::vec3 refactored_func(glm::vec3 vec) {
   int index = get_max_index(glm::abs(vec));
+  float float_index = (float)index;
 
   float max_value_sign =
-      (glm::clamp(glm::sign(vec[index]) + 1.0f, 0.f, 1.f) * 2.0f - 1.0f);
+      glm::clamp(glm::sign(vec[index]) + 1.0f, 0.f, 1.f) * 2.0f - 1.0f;
 
-  float layer = (float)index * 2.0f;
+  float layer = float_index * 2.0f + ((max_value_sign * -1.0f) + 1.0f) * 0.5f;
 
-  layer += ((max_value_sign * -1.0) + 1.0) * 0.5;
+  /* index | vec_yz_sign
+       0   |      1
+       1   |      1
+       2   |     -1
+  */
+  float vec_yz_sign =
+      glm::clamp((float_index * -1.0f) + 2.0f, 0.f, 1.f) * 2.0f - 1.0f;
 
-  if (index == 2) {
-    vec.y *= -1.0f;
-    vec.z *= -1.0f;
-  }
+  vec.y *= vec_yz_sign;
+  vec.z *= vec_yz_sign;
 
   vec[(index + 1) % 2] *= max_value_sign;
 

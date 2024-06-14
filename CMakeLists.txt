@@ -96,12 +96,12 @@ if(GLSL_VALIDATOR)
 
         add_custom_target(
             ${GLSL_FILENAME}_SPIRV_TARGET
-            COMMAND ${GLSL_VALIDATOR} -V ${GLSL_FILE} -o ${SPIRV_FILE} -e main -t --glsl-version ${GLSL_VERSION} --enhanced-msgs --target-env ${TARGET_ENV} -I${PXD_SHADER_DIR} --spirv-val -g0
+            COMMAND ${GLSL_VALIDATOR} -V ${GLSL_FILE} -o ${SPIRV_FILE} -e main -t --glsl-version ${GLSL_VERSION} --enhanced-msgs --target-env ${TARGET_ENV} -I${PXD_SHADER_DIR} --spirv-val
         )
 
         add_custom_target(
             ${GLSL_FILENAME}_SPIRV_C_TARGET
-            COMMAND ${GLSL_VALIDATOR} -V ${GLSL_FILE} -o ${SPIRV_C_HEADER_FILE} -e main -t --glsl-version ${GLSL_VERSION} --enhanced-msgs --target-env ${TARGET_ENV} -I${PXD_SHADER_DIR} --vn ${SPIRV_C_NAME} --spirv-val -g0
+            COMMAND ${GLSL_VALIDATOR} -V ${GLSL_FILE} -o ${SPIRV_C_HEADER_FILE} -e main -t --glsl-version ${GLSL_VERSION} --enhanced-msgs --target-env ${TARGET_ENV} -I${PXD_SHADER_DIR} --vn ${SPIRV_C_NAME} --spirv-val
         )
 
         add_dependencies(${PROJECT_NAME} ${GLSL_FILENAME}_SPIRV_TARGET ${GLSL_FILENAME}_SPIRV_C_TARGET)
