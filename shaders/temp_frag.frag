@@ -36,6 +36,8 @@ vec3 get_val(vec3 vec) {
 
   vec[(index + 1) % 2] *= max_value_sign;
 
+  vec /= vec[index];
+
   vec2 coord = vec2(vec[int(coord_cached_values[index * 4 + 1])],
                     vec[int(coord_cached_values[index * 4 + 2])]) *
                coord_cached_values[index * 4 + 3];
