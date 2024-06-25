@@ -7,3 +7,6 @@
 [submodule "third-party/benchmark"]
 	path = third-party/benchmark
 	url = https://github.com/google/benchmark.git
+[submodule "third-party/glfw"]
+	path = third-party/glfw
+	url = https://github.com/glfw/glfw.git
