@@ -1,8 +1,7 @@
 #pragma once
 
 #include "gles2.h"
-
-constexpr size_t NUM_ITER = 10'000;
+#include "test_funcs.hpp"
 
 namespace pxd {
 GLuint get_vertex_array(GLuint buffer);

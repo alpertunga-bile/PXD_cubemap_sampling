@@ -9,6 +9,7 @@
 #endif
 
 constexpr size_t N = 10'000'000;
+constexpr size_t NUM_TRIANGLES = 10'000;
 
 #include "vec3.hpp"
 
@@ -18,5 +19,5 @@ glm::vec3 refactored_func(glm::vec3 vec);
 
 bool check_vec_equal(const glm::vec3 &a, const glm::vec3 &b);
 int fill_temp_array(glm::vec3 arr[]);
-int fill_temp_array(float *arr, size_t size);
+int fill_temp_array(float arr[]);
 } // namespace pxd

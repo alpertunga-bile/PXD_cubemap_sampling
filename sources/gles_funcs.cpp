@@ -16,8 +16,8 @@
 
 namespace pxd {
 GLuint get_vertex_array(GLuint buffer) {
-  float temp_arr[NUM_ITER * 3];
-  int result = fill_temp_array(temp_arr, NUM_ITER * 3);
+  float temp_arr[NUM_TRIANGLES * 3];
+  int result = fill_temp_array(temp_arr);
 
   GLuint vertex_array = 0;
 
@@ -28,7 +28,7 @@ GLuint get_vertex_array(GLuint buffer) {
   glBindVertexArray(vertex_array);
 
   glBindBuffer(GL_ARRAY_BUFFER, buffer);
-  glBufferData(GL_ARRAY_BUFFER, NUM_ITER, temp_arr, GL_STATIC_DRAW);
+  glBufferData(GL_ARRAY_BUFFER, NUM_TRIANGLES * 3, temp_arr, GL_STATIC_DRAW);
 
   glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)0);
   glEnableVertexAttribArray(0);

@@ -40,10 +40,12 @@ int main() {
   GLuint vertex_array = pxd::get_vertex_array(data_buffer);
 
   while (!glfwWindowShouldClose(window)) {
+    glClearColor(0.f, 0.f, 0.f, 1.0f);
+    glClear(GL_COLOR_CLEAR_VALUE);
 
     glUseProgram(program);
     glBindVertexArray(vertex_array);
-    glDrawArrays(GL_TRIANGLES, 0, NUM_ITER);
+    glDrawArrays(GL_TRIANGLES, 0, NUM_TRIANGLES);
 
     glfwPollEvents();
     glfwSwapBuffers(window);

@@ -126,13 +126,13 @@ int fill_temp_array(glm::vec3 arr[]) {
   return 0;
 }
 
-int fill_temp_array(float *arr, size_t size) {
+int fill_temp_array(float arr[]) {
   std::random_device dev;
   std::mt19937_64 random_engine(dev());
   std::uniform_real_distribution<> generator(-1000000.f, 1000000.f);
 
-  for (size_t i = 0; i < size; i++) {
-    arr[i] = static_cast<float>(generator(random_engine));
+  for (size_t i = 0; i < NUM_TRIANGLES * 3; i++) {
+    arr[i] = (float)generator(random_engine);
   }
 
   return 0;
