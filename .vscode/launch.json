@@ -9,7 +9,7 @@
             "type": "cppvsdbg",
             "request": "launch",
             "program": "${workspaceRoot}/build/Debug/pxd-cubesample-opengles.exe",
-            "externalConsole": false,
+            "console": "integratedTerminal",
             "logging": {
                 "moduleLoad": false,
                 "trace": true

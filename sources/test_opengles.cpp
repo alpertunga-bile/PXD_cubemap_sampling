@@ -7,7 +7,6 @@
 
 constexpr int WIN_WIDTH = 1280;
 constexpr int WIN_HEIGHT = 720;
-constexpr size_t NUM_ITER = 99'999'999;
 
 int main() {
   int result = glfwInit();
@@ -32,13 +31,28 @@ int main() {
   glfwMakeContextCurrent(window);
   result = gladLoadGLES2(glfwGetProcAddress);
 
-  GLuint program = pxd::get_shader_program();
+  GLuint program =
+      pxd::get_shader_program("shaders/temp.vert", "shaders/temp.frag");
+
+  GLuint data_buffer = 0;
+  glGenBuffers(1, &data_buffer);
+
+  GLuint vertex_array = pxd::get_vertex_array(data_buffer);
 
   while (!glfwWindowShouldClose(window)) {
+
+    glUseProgram(program);
+    glBindVertexArray(vertex_array);
+    glDrawArrays(GL_TRIANGLES, 0, NUM_ITER);
 
     glfwPollEvents();
     glfwSwapBuffers(window);
   }
+
+  glDeleteBuffers(1, &data_buffer);
+  glDeleteVertexArrays(1, &vertex_array);
+
+  glDeleteProgram(program);
 
   glfwDestroyWindow(window);
 

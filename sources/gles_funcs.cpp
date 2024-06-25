@@ -1,5 +1,7 @@
 #include "gles_funcs.hpp"
 
+#include "test_funcs.hpp"
+
 #include <filesystem>
 #include <fstream>
 #include <sstream>
@@ -13,13 +15,32 @@
 #include "core.h"
 
 namespace pxd {
-GLuint get_shader_program() {
+GLuint get_vertex_array(GLuint buffer) {
+  float temp_arr[NUM_ITER * 3];
+  int result = fill_temp_array(temp_arr, NUM_ITER * 3);
+
+  GLuint vertex_array = 0;
+
+  glGenVertexArrays(1, &vertex_array);
+
+  glGenBuffers(1, &buffer);
+
+  glBindVertexArray(vertex_array);
+
+  glBindBuffer(GL_ARRAY_BUFFER, buffer);
+  glBufferData(GL_ARRAY_BUFFER, NUM_ITER, temp_arr, GL_STATIC_DRAW);
+
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)0);
+  glEnableVertexAttribArray(0);
+
+  return vertex_array;
+}
+
+GLuint get_shader_program(const char *vert_path, const char *frag_path) {
   fmt::println("Vertex Shader");
-  GLuint vertex_shader =
-      get_compiled_shader("shaders/temp.vert", GL_VERTEX_SHADER);
+  GLuint vertex_shader = get_compiled_shader(vert_path, GL_VERTEX_SHADER);
   fmt::println("Fragment Shader");
-  GLuint frag_shader =
-      get_compiled_shader("shaders/temp.frag", GL_FRAGMENT_SHADER);
+  GLuint frag_shader = get_compiled_shader(frag_path, GL_FRAGMENT_SHADER);
 
   GLuint program = glCreateProgram();
 
