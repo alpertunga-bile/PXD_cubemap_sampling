@@ -9,7 +9,7 @@
 #endif
 
 constexpr size_t N = 10'000'000;
-constexpr size_t NUM_TRIANGLES = 10'000;
+constexpr size_t NUM_TRIANGLES = 100'000;
 
 #include "vec3.hpp"
 
