@@ -83,8 +83,7 @@ constexpr float coord_cached_values[16] = {
 glm::vec3 refactored_func(glm::vec3 vec) {
   int index = get_max_index(glm::abs(vec));
 
-  float max_value_sign =
-      coord_cached_values[12 + (int)glm::sign(vec[index]) + 1];
+  float max_value_sign = coord_cached_values[13 + (int)glm::sign(vec[index])];
 
   float layer = (float)index * 2.0f + ((max_value_sign * -1.0f) + 1.0f) * 0.5f;
 

@@ -1,4 +1,6 @@
-#version 460
+#version 310 es
+
+precision highp float;
 
 layout(location = 0) out vec4 frag_color;
 
@@ -18,14 +20,14 @@ int get_max_index(vec3 vec) {
   return index;
 }
 
-const float coord_cached_values[16] = {1.0,  2.0, 1.0,  -1.0, 1.0, 0.0,
-                                       2.0,  1.0, -1.0, 0.0,  1.0, -1.0,
-                                       -1.0, 1.0, 1.0,  0.0};
+const float coord_cached_values[16] =
+    float[](1.0, 2.0, 1.0, -1.0, 1.0, 0.0, 2.0, 1.0, -1.0, 0.0, 1.0, -1.0, -1.0,
+            1.0, 1.0, 0.0);
 
-vec3 get_val(vec3 vec) {
+vec3 UVWToUVLayer(vec3 vec) {
   int index = get_max_index(abs(vec));
 
-  float max_value_sign = coord_cached_values[12 + (int(sign(vec[index]))) + 1];
+  float max_value_sign = coord_cached_values[13 + (int(sign(vec[index])))];
 
   float layer = float(index) * 2.0 + ((max_value_sign * -1.0) + 1.0) * 0.5;
 
@@ -49,6 +51,6 @@ layout(location = 0) in vec3 random_value;
 layout(location = 1) in vec3 color;
 
 void main() {
-  vec3 temp_vec = get_val(random_value);
+  vec3 temp_vec = UVWToUVLayer(random_value);
   frag_color = vec4(color, 1.0);
 }
