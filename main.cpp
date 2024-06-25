@@ -14,7 +14,7 @@ int main() {
 
   auto log_file = fmt::output_file("errors.txt");
 
-  for (int i = 0; i < N; i++) {
+  for (size_t i = 0; i < N; i++) {
     glm::vec3 temp_vec =
         glm::vec3(generator(random_engine), generator(random_engine),
                   generator(random_engine));

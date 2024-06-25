@@ -10,6 +10,8 @@
 
 #include "glm.hpp"
 
+#include <random>
+
 namespace pxd {
 // from
 // https://github.com/Oyun-Teknolojileri/ToolKit/blob/Engine/Resources/Engine/Shaders/textureUtil.shader
@@ -58,7 +60,8 @@ glm::vec3 reel_func(glm::vec3 vec) {
   return glm::vec3(coord, layer);
 }
 
-constexpr float EPSILON = 0.00001f;
+// -------------------------------------------------------------------------------------------------------------------
+// -- Refactor Part
 
 inline int get_max_index(glm::vec3 &&vec) noexcept {
   float max_val = vec.x;
@@ -103,7 +106,23 @@ glm::vec3 refactored_func(glm::vec3 vec) {
   return glm::vec3((coord + glm::vec2(1.0f)) * 0.5f, layer);
 }
 
+// -------------------------------------------------------------------------------------------------------------------
+// -- Utility Functions
+
 bool check_vec_equal(const glm::vec3 &a, const glm::vec3 &b) {
   return glm::all(glm::equal(a, b));
+}
+
+int fill_temp_array(glm::vec3 arr[]) {
+  std::random_device dev;
+  std::mt19937_64 random_engine(dev());
+  std::uniform_real_distribution<> generator(-1000000.f, 1000000.f);
+
+  for (size_t i = 0; i < N; i++) {
+    arr[i] = glm::vec3(generator(random_engine), generator(random_engine),
+                       generator(random_engine));
+  }
+
+  return 0;
 }
 } // namespace pxd
