@@ -20,9 +20,9 @@ int get_max_index(vec3 vec) {
   return index;
 }
 
-const float coord_cached_values[16] =
-    float[](1.0, 2.0, 1.0, -1.0, 1.0, 0.0, 2.0, 1.0, -1.0, 0.0, 1.0, -1.0, -1.0,
-            1.0, 1.0, 0.0);
+layout(std140, binding = 0) uniform CachedValues {
+  float coord_cached_values[16];
+};
 
 vec3 UVWToUVLayer(vec3 vec) {
   int index = get_max_index(abs(vec));

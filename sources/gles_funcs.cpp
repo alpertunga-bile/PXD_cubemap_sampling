@@ -33,9 +33,33 @@ GLuint get_vertex_array(GLuint buffer) {
   glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)0);
   glEnableVertexAttribArray(0);
 
-  delete temp_arr;
+  delete[] temp_arr;
 
   return vertex_array;
+}
+
+GLuint get_uniform_buffer(GLuint program) {
+  constexpr float cached_values[16] = {1.0f,  2.0f, 1.0f,  -1.0f, 1.0f, 0.0f,
+                                       2.0f,  1.0f, -1.0f, 0.0f,  1.0f, -1.0f,
+                                       -1.0f, 1.0f, 1.0f,  0.0f};
+
+  GLuint cached_values_index = glGetUniformBlockIndex(program, "CachedValues");
+  glUniformBlockBinding(program, cached_values_index, 0);
+
+  GLuint ubo = 0;
+
+  glGenBuffers(1, &ubo);
+  glBindBuffer(GL_UNIFORM_BUFFER, ubo);
+  glBufferData(GL_UNIFORM_BUFFER, 16 * sizeof(float), NULL, GL_STATIC_DRAW);
+  glBindBuffer(GL_UNIFORM_BUFFER, 0);
+
+  glBindBufferRange(GL_UNIFORM_BUFFER, 0, ubo, 0, 16 * sizeof(float));
+
+  glBindBuffer(GL_UNIFORM_BUFFER, ubo);
+  glBufferSubData(GL_UNIFORM_BUFFER, 0, 16 * sizeof(float), cached_values);
+  glBindBuffer(GL_UNIFORM_BUFFER, 0);
+
+  return ubo;
 }
 
 GLuint get_shader_program(const char *vert_path, const char *frag_path) {
